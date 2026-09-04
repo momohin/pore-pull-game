@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="theme-color" content="#f5d9cf" />
+<title>角栓ぬき - PORE PULL v4</title>
+<style>
+:root{
+  --ink:#2b211d; --pink:#eb7390; --pink2:#f4a5b8;
+  --skin1:#efb9a5; --skin2:#f8cfbd; --skin3:#e8aa96;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:var(--ink);background:#f3d9cf;overflow:hidden}
+button{font:inherit}
+.app{height:100dvh;max-width:520px;margin:auto;position:relative;overflow:hidden;background:linear-gradient(#f7e4dc,#f0d1c6)}
+.screen{position:absolute;inset:0;padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));display:none}
+.screen.active{display:flex}
+#home{flex-direction:column;justify-content:space-between}
+.toprow,.gamebar{display:flex;justify-content:space-between;align-items:center}
+.iconbtn{width:46px;height:46px;border:0;border-radius:16px;background:rgba(255,255,255,.62);box-shadow:0 8px 24px rgba(72,42,32,.12);font-size:22px}
+.hero{text-align:center}
+.nose{width:270px;height:218px;margin:auto;border-radius:46% 46% 54% 54%;position:relative;background:
+radial-gradient(circle at 22% 25%,#80645a 0 1.7px,transparent 2.2px),
+radial-gradient(circle at 38% 44%,#795d53 0 1.5px,transparent 2px),
+radial-gradient(circle at 63% 28%,#775c52 0 1.7px,transparent 2.2px),
+radial-gradient(circle at 72% 53%,#82675b 0 1.6px,transparent 2.1px),
+radial-gradient(circle at 48% 65%,#785b51 0 1.5px,transparent 2px),
+linear-gradient(135deg,var(--skin1),var(--skin2) 58%,var(--skin3));box-shadow:inset 0 0 50px rgba(255,255,255,.42),0 18px 40px rgba(90,48,35,.12)}
+.nose:before,.nose:after{content:"";position:absolute;bottom:20px;width:48px;height:25px;background:#71493f;border-radius:50%;box-shadow:inset 0 5px 8px rgba(0,0,0,.2)}
+.nose:before{left:60px}.nose:after{right:60px}
+h1{font-size:43px;margin:10px 0 0;letter-spacing:.08em}
+.sub{font-weight:800;letter-spacing:.3em;margin-top:2px}
+.tag{margin-top:9px;font-size:16px}
+.play{width:100%;border:0;border-radius:28px;padding:18px;background:linear-gradient(135deg,var(--pink2),var(--pink));color:#fff;font-size:23px;font-weight:900;box-shadow:0 12px 28px rgba(230,100,130,.28)}
+.homegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.small{border:0;border-radius:20px;padding:14px 4px;background:rgba(255,255,255,.72);font-weight:800;box-shadow:0 8px 20px rgba(70,40,30,.08)}
+#game{flex-direction:column;background:linear-gradient(#efc0ad,#f8d5c8)}
+.stage{font-weight:900;font-size:19px}
+.pill{background:rgba(88,57,47,.62);color:#fff;padding:9px 13px;border-radius:15px;font-weight:900}
+.progress{height:8px;border-radius:99px;background:rgba(255,255,255,.45);overflow:hidden;margin-top:9px}
+.progress>div{height:100%;width:0;background:#fff;border-radius:inherit;transition:.25s}
+.skin{position:relative;flex:1;margin:14px 0;border-radius:34px;overflow:hidden;box-shadow:inset 0 0 75px rgba(127,71,53,.12),0 12px 30px rgba(75,44,34,.12);background:
+radial-gradient(ellipse at 18% 22%,rgba(255,246,238,.32) 0 1.1%,transparent 2.7%),
+radial-gradient(ellipse at 72% 18%,rgba(255,244,235,.24) 0 1%,transparent 2.4%),
+radial-gradient(ellipse at 44% 63%,rgba(255,239,230,.20) 0 1.2%,transparent 2.8%),
+radial-gradient(ellipse at 82% 72%,rgba(255,245,238,.22) 0 1%,transparent 2.5%),
+radial-gradient(circle at 14% 38%,rgba(121,66,54,.10) 0 .7px,transparent 1.6px),
+radial-gradient(circle at 33% 17%,rgba(126,70,57,.08) 0 .8px,transparent 1.7px),
+radial-gradient(circle at 58% 31%,rgba(126,70,57,.09) 0 .7px,transparent 1.6px),
+radial-gradient(circle at 76% 48%,rgba(126,70,57,.08) 0 .8px,transparent 1.7px),
+radial-gradient(circle at 25% 74%,rgba(126,70,57,.08) 0 .8px,transparent 1.7px),
+radial-gradient(circle at 64% 83%,rgba(126,70,57,.09) 0 .7px,transparent 1.6px),
+radial-gradient(ellipse at 50% 48%,rgba(255,216,202,.22),rgba(219,143,120,.14) 58%,rgba(178,102,84,.08) 100%),
+linear-gradient(128deg,#e6a58f 0%,#f2b9a4 26%,#f7c6b3 52%,#edaf99 75%,#dfa087 100%);}
+.skin:before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.52;
+  background:
+    repeating-linear-gradient(17deg,rgba(113,64,51,.025) 0 1px,transparent 1px 7px),
+    repeating-linear-gradient(103deg,rgba(255,255,255,.035) 0 1px,transparent 1px 10px);
+  mix-blend-mode:multiply;
+}
+.skin:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  box-shadow:inset 0 24px 55px rgba(255,239,231,.13),inset 0 -28px 55px rgba(126,67,52,.10);
+}
+.pore{
+  --pull:0; --lift:0px;
+  position:absolute;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;touch-action:none;display:grid;place-items:center;z-index:3;
+}
+.tension{
+  position:absolute;left:50%;top:50%;width:92px;height:66px;border-radius:50%;
+  transform:translate(-50%,-50%) translateY(calc(var(--lift) * .48)) scaleX(calc(1 - var(--pull)*.18)) scaleY(calc(1 + var(--pull)*.55));
+  background:radial-gradient(ellipse at 50% 42%,rgba(255,225,214,.36) 0 28%,rgba(205,119,96,.12) 52%,transparent 74%);
+  box-shadow:inset 0 -8px 18px rgba(129,67,52,.10),0 -6px 14px rgba(255,237,230,.12);
+  opacity:calc(.08 + var(--pull)*.95); pointer-events:none;z-index:0;transition:opacity .08s linear;
+}
+.rim{
+  position:absolute;
+  left:50%; top:50%;
+  width:var(--capW,18px); height:var(--capH,14px);
+  border-radius:48% 52% 50% 50%;
+  transform:translate(-50%,-50%);
+  z-index:3;
+  background:
+    radial-gradient(ellipse at 50% 45%,
+      #fffdf5 0 26%,
+      #f7edcf 27% 44%,
+      #e8d6ad 45% 58%,
+      #d1b889 59% 68%,
+      rgba(229,169,149,.42) 69% 80%,
+      transparent 81%);
+  box-shadow:
+    inset 0 1px 2px rgba(255,255,255,.48),
+    inset 0 -1px 2px rgba(110,74,49,.16),
+    0 0 3px rgba(151,82,64,.20),
+    0 1px 2px rgba(79,46,34,.08);
+  transition:opacity .08s, transform .08s;
+}
+.rim:after{
+  content:"";position:absolute;left:50%;top:50%;width:155%;height:145%;
+  transform:translate(-50%,-50%);border-radius:50%;z-index:-1;
+  background:radial-gradient(ellipse,rgba(201,126,105,.18) 0 35%,rgba(236,171,150,.10) 52%,transparent 74%);
+  filter:blur(.7px);
+}
+.pore.grabbed .rim{opacity:.28;transform:translate(-50%,-50%) scale(.9)}
+.pore.ready{animation:pulse 1.35s infinite}
+@keyframes pulse{50%{filter:drop-shadow(0 0 8px rgba(255,255,255,.55))}}
+.plug{
+  position:absolute;
+  left:50%; top:50%;
+  width:var(--plugW,14px);
+  height:var(--plugH,58px);
+  transform:translate(-50%,-100%) scaleY(.04);
+  transform-origin:50% 100%;
+  opacity:0;
+  pointer-events:none;
+  z-index:5;
+  clip-path:polygon(50% 0%,82% 15%,100% 100%,0 100%,18% 15%);
+  background:
+    linear-gradient(90deg,
+      #c9b27d 0%,
+      #f3e6bd 20%,
+      #fffce8 48%,
+      #f8edc9 62%,
+      #d6bd87 82%,
+      #aa8b5d 100%);
+  filter:drop-shadow(0 2px 1px rgba(69,42,31,.22));
+}
+.pore.black .plug{background:linear-gradient(90deg,#6a4b32,#c7a36b 22%,#ead7a4 52%,#9d7045 82%,#5d412f)}
+.pore.white .plug{background:linear-gradient(90deg,#d7c7a1,#fff9df 30%,#fffdf0 55%,#eadbb7 82%,#c4a776)}
+.pore.grabbed .plug{opacity:1}
+.pore.primed .plug{opacity:1}
+.pore.primed .rim{opacity:.34;transform:translate(-50%,-50%) scale(.92)}
+.pore.squeezing .tension{
+  opacity:.95;
+  transform:translate(-50%,-50%) scaleX(.72) scaleY(1.13);
+}
+.pore.primed:after{
+  content:"READY";
+  position:absolute;left:50%;top:calc(50% + 27px);
+  transform:translateX(-50%);
+  font-size:8px;font-weight:900;letter-spacing:.08em;
+  color:rgba(92,54,42,.58);pointer-events:none;
+}
+
+.hole{
+  position:absolute;
+  left:50%; top:50%;
+  width:var(--holeW,20px); height:var(--holeH,14px);
+  transform:translate(-50%,-50%) scale(.15);
+  border-radius:49% 51% 50% 50%;
+  opacity:0;
+  z-index:2;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 48%,
+      #17110f 0 24%,
+      #3d2c24 25% 36%,
+      #7a563f 37% 48%,
+      #b88e68 49% 61%,
+      rgba(226,168,148,.50) 62% 76%,
+      transparent 77%);
+  box-shadow:
+    inset 0 3px 5px rgba(30,10,8,.48),
+    0 0 0 1px rgba(161,78,63,.10);
+}
+.pore.extracted .rim{opacity:0;transform:translate(-50%,-50%) scale(.7)}
+.pore.extracted .tension{opacity:.16;transform:translate(-50%,-50%) scale(1)}
+.pore.grabbed .hole{opacity:0}
+.pore.extracted .hole{opacity:1;transform:translate(-50%,-50%) scale(1);transition:.16s cubic-bezier(.2,.9,.25,1.2)}
+.hole.shrink{animation:shrinkHole 6s ease forwards}
+@keyframes shrinkHole{0%,45%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(.68);opacity:.78}}
+.hint{text-align:center;background:rgba(103,68,56,.84);color:white;padding:12px 10px;border-radius:19px;font-weight:800}
+.burst{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);font-size:43px;font-weight:1000;color:white;text-shadow:0 3px 12px rgba(80,40,30,.35);opacity:0;pointer-events:none;z-index:8}
+.burst.show{animation:pop .7s ease}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}35%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}100%{opacity:0;transform:translate(-50%,-70%) scale(.95)}}
+.nextWrap{display:none;position:absolute;inset:0;background:rgba(73,45,36,.28);backdrop-filter:blur(4px);z-index:20;align-items:center;justify-content:center}
+.nextCard{width:min(86%,360px);background:rgba(255,250,247,.96);border-radius:28px;padding:24px;text-align:center;box-shadow:0 18px 45px rgba(64,36,28,.22)}
+.nextCard h3{font-size:28px;margin:0 0 8px}
+.nextCard p{margin:0 0 18px}
+.nextBtn{width:100%;border:0;border-radius:22px;padding:15px;background:linear-gradient(135deg,var(--pink2),var(--pink));color:white;font-weight:900;font-size:19px}
+.toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);background:#2f231f;color:white;padding:11px 15px;border-radius:99px;opacity:0;transition:.2s;z-index:30;white-space:nowrap;font-weight:800}
+.toast.show{opacity:1}
+.badge{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.65);padding:7px 10px;border-radius:99px;font-weight:900;font-size:12px;z-index:7}
+</style>
+</head>
+<body>
+<div class="app">
+<section id="home" class="screen active">
+  <div class="toprow">
+    <button class="iconbtn" id="soundBtn">🔊</button>
+    <div style="font-weight:900">🪙 <span id="coinHome">0</span></div>
+  </div>
+  <div class="hero">
+    <div class="nose"></div>
+    <h1>角栓ぬき</h1><div class="sub">PORE PULL</div>
+    <div class="tag">にゅる〜、スポン！</div>
+  </div>
+  <div>
+    <button class="play" id="playBtn">プレイする</button>
+    <div class="homegrid">
+      <button class="small">📖<br>図鑑</button>
+      <button class="small">⭐<br>チャレンジ</button>
+      <button class="small">🛒<br>ショップ</button>
+    </div>
+  </div>
+</section>
+
+<section id="game" class="screen">
+  <div class="gamebar">
+    <button class="iconbtn" id="backBtn">←</button>
+    <div class="stage">ステージ <span id="stageNo">1</span></div>
+    <div class="pill">スコア <span id="score">0</span></div>
+  </div>
+  <div class="progress"><div id="prog"></div></div>
+  <div class="skin" id="skin">
+    <div class="badge">🪙 <span id="coinGame">0</span></div>
+    <div id="pores"></div>
+    <div class="burst" id="burst">スポン！</div>
+  </div>
+  <div class="hint" id="hint">まず2本指で毛穴の左右を挟んで、内側へスライド！</div>
+
+  <div class="nextWrap" id="nextWrap">
+    <div class="nextCard">
+      <h3>ステージクリア！✨</h3>
+      <p>全部抜けた！次は少し難しくなるよ。</p>
+      <button class="nextBtn" id="nextBtn">次のステージへ</button>
+    </div>
+  </div>
+</section>
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const state={
+  coins:+(localStorage.getItem('poreCoinsV4')||0),
+  sound:localStorage.getItem('poreSoundV4')!=='off'
+};
+let stage=1,score=0,removed=0,total=0,active=null,startY=0,audioCtx=null;
+
+function ensureAudio(){
+  if(!state.sound)return;
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+}
+document.addEventListener('pointerdown',ensureAudio,{once:true});
+
+function playPop(size=1){
+  if(!state.sound)return; ensureAudio(); if(!audioCtx)return;
+  const now=audioCtx.currentTime;
+
+  // high "pyuun!" swoop
+  const osc=audioCtx.createOscillator(),g=audioCtx.createGain();
+  osc.type='sine';
+  const start=size<.9?950:(size>1.15?720:840);
+  const peak=size<.9?1450:(size>1.15?1080:1260);
+  const end=size<.9?620:(size>1.15?460:540);
+  osc.frequency.setValueAtTime(start,now);
+  osc.frequency.exponentialRampToValueAtTime(peak,now+.055);
+  osc.frequency.exponentialRampToValueAtTime(end,now+.20);
+  g.gain.setValueAtTime(.0001,now);
+  g.gain.exponentialRampToValueAtTime(.10,now+.012);
+  g.gain.exponentialRampToValueAtTime(.0001,now+.22);
+  osc.connect(g).connect(audioCtx.destination);
+  osc.start(now);osc.stop(now+.23);
+
+  const air=audioCtx.createOscillator(),ag=audioCtx.createGain();
+  air.type='triangle';
+  air.frequency.setValueAtTime(start*1.35,now);
+  air.frequency.exponentialRampToValueAtTime(end*1.3,now+.11);
+  ag.gain.setValueAtTime(.035,now);
+  ag.gain.exponentialRampToValueAtTime(.0001,now+.12);
+  air.connect(ag).connect(audioCtx.destination);
+  air.start(now);air.stop(now+.13);
+}
+function playStretch(amount=.4){
+  if(!state.sound)return;ensureAudio();if(!audioCtx)return;
+  const now=audioCtx.currentTime,osc=audioCtx.createOscillator(),g=audioCtx.createGain();
+  osc.type='sine';osc.frequency.setValueAtTime(120+amount*30,now);osc.frequency.exponentialRampToValueAtTime(86,now+.05);
+  g.gain.setValueAtTime(.015,now);g.gain.exponentialRampToValueAtTime(.0001,now+.055);
+  osc.connect(g).connect(audioCtx.destination);osc.start(now);osc.stop(now+.06);
+}
+function save(){
+  localStorage.setItem('poreCoinsV4',state.coins);
+  localStorage.setItem('poreSoundV4',state.sound?'on':'off');
+  $('#coinHome').textContent=state.coins;$('#coinGame').textContent=state.coins;
+  $('#soundBtn').textContent=state.sound?'🔊':'🔇';
+}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active')}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),900)}
+
+function stageConfig(n){
+  const count=Math.min(6+n*2,14);
+  return {count, minLen:18+n, maxLen:44+n*2};
+}
+function rand(a,b){return a+Math.random()*(b-a)}
+function newStage(){
+  const cfg=stageConfig(stage);
+  removed=0; total=cfg.count; score=0;
+  $('#stageNo').textContent=stage; $('#score').textContent=0; $('#prog').style.width='0%';
+  $('#nextWrap').style.display='none'; $('#pores').innerHTML='';
+  for(let i=0;i<cfg.count;i++){
+    const p=document.createElement('div');p.className='pore ready';
+    p.style.left=rand(12,88)+'%';p.style.top=rand(14,84)+'%';
+
+    const size=rand(.72,1.38);
+    const rareLong=Math.random()<0.08;
+    const len=rareLong ? rand(72+stage*3,110+stage*5) : rand(cfg.minLen,cfg.maxLen);
+    const width=rand(9,19)*size;
+    p.dataset.size=size.toFixed(2);
+    p.dataset.need=Math.round(rand(58,90)+len*.18);
+
+    if(Math.random()<.22)p.classList.add('black');
+    else if(Math.random()<.20)p.classList.add('white');
+
+    const holeW=Math.max(20,Math.round(width*1.65));
+    const holeH=Math.max(16,Math.round(width*1.25));
+    p.style.setProperty('--plugW',`${width}px`);
+    p.style.setProperty('--plugH',`${len}px`);
+    p.style.setProperty('--capW',`${Math.max(11,width*.95)}px`);
+    p.style.setProperty('--capH',`${Math.max(9,width*.72)}px`);
+    p.style.setProperty('--holeW',`${holeW}px`);
+    p.style.setProperty('--holeH',`${holeH}px`);
+    p.innerHTML=`<div class="tension"></div><div class="rim"></div><div class="hole"></div><div class="plug"></div>`;
+    bindPore(p);$('#pores').appendChild(p);
+  }
+  $('#hint').textContent='まず2本指で毛穴の左右を挟んで、内側へスライド！';
+}
+function finishStage(){
+  state.coins+=20+stage*5; save();
+  $('#hint').textContent='✨ 全部抜けた！';
+  setTimeout(()=>$('#nextWrap').style.display='flex',350);
+}
+function bindPore(p){
+  let lastTick=0;
+  let touches=new Map();
+  let squeezeStart=null;
+  let pullId=null;
+  let pullStartY=0;
+  let pullStartTime=0;
+
+  function setPreReveal(amount){
+    const plug=p.querySelector('.plug');
+    const r=Math.max(.04,Math.min(.30,amount));
+    plug.style.transition='.08s';
+    plug.style.transform=`translate(-50%,-100%) scaleY(${r})`;
+    if(r>.08) plug.style.opacity='1';
+  }
+
+  // Two fingers on the left/right sides: squeeze/slide toward the pore.
+  p.addEventListener('touchstart',e=>{
+    if(p.dataset.done)return;
+    ensureAudio();
+    for(const t of e.changedTouches) touches.set(t.identifier,{x:t.clientX,y:t.clientY});
+    if(touches.size>=2 && !p.classList.contains('primed')){
+      const pts=[...touches.values()].slice(0,2);
+      squeezeStart=Math.abs(pts[0].x-pts[1].x);
+      p.classList.add('squeezing');
+      e.preventDefault();
+    }
+  },{passive:false});
+
+  p.addEventListener('touchmove',e=>{
+    if(p.dataset.done)return;
+    for(const t of e.changedTouches) touches.set(t.identifier,{x:t.clientX,y:t.clientY});
+
+    if(touches.size>=2 && squeezeStart){
+      const pts=[...touches.values()].slice(0,2);
+      const gap=Math.abs(pts[0].x-pts[1].x);
+      const squeeze=Math.max(0,squeezeStart-gap);
+      const amount=Math.min(1,squeeze/28);
+      setPreReveal(.04+amount*.26);
+      p.style.setProperty('--pull',(amount*.32).toFixed(3));
+      p.classList.add('squeezing');
+
+      if(amount>.62){
+        p.dataset.primed='1';
+        p.classList.add('primed');
+        setPreReveal(.28);
+        navigator.vibrate?.(10);
+        $('#hint').textContent='少し出た！角栓を1本指で上にシュッ！';
+      }
+      e.preventDefault();
+    }
+  },{passive:false});
+
+  p.addEventListener('touchend',e=>{
+    for(const t of e.changedTouches) touches.delete(t.identifier);
+    if(touches.size<2){
+      squeezeStart=null;
+      p.classList.remove('squeezing');
+      p.style.setProperty('--pull','0');
+      if(!p.dataset.primed) setPreReveal(.04);
+      else setPreReveal(.28);
+    }
+  },{passive:false});
+
+  // Pointer path is only for the second step.
+  p.addEventListener('pointerdown',e=>{
+    if(p.dataset.done)return;
+    // Ignore touch pointer events while two-finger squeezing is happening.
+    if(p.classList.contains('squeezing')) return;
+    if(!p.dataset.primed){
+      toast('まず2本指で左右から押し出して！');
+      return;
+    }
+    ensureAudio();
+    active=p;
+    pullId=e.pointerId;
+    pullStartY=e.clientY;
+    pullStartTime=performance.now();
+    startY=e.clientY;
+    try{p.setPointerCapture(e.pointerId)}catch(_){}
+    p.classList.add('grabbed');
+  });
+
+  p.addEventListener('pointermove',e=>{
+    if(active!==p || pullId!==e.pointerId)return;
+    const dy=Math.min(0,e.clientY-pullStartY);
+    const dist=Math.abs(dy);
+    const plug=p.querySelector('.plug');
+    const reveal=Math.max(.28,Math.min(1,.28+dist/Math.max(34,Number(p.dataset.need)*.72)));
+    plug.style.transition='none';
+    plug.style.transform=`translate(-50%,-100%) scaleY(${reveal})`;
+
+    const pull=Math.min(1,dist/95),lift=Math.min(18,dist*.15);
+    p.style.setProperty('--pull',pull.toFixed(3));
+    p.style.setProperty('--lift',(-lift)+'px');
+    if(dist-lastTick>24){playStretch(pull);lastTick=dist}
+  });
+
+  p.addEventListener('pointerup',e=>{
+    if(active!==p || pullId!==e.pointerId)return;
+    const dy=e.clientY-pullStartY;
+    const dist=Math.abs(Math.min(0,dy));
+    const elapsed=Math.max(1,performance.now()-pullStartTime);
+    const velocity=dist/elapsed; // px/ms
+    const size=Number(p.dataset.size);
+
+    // Extraction only on a clear upward "shh!" flick.
+    const flicked = dy < -42 && (velocity > .28 || dist > 72);
+
+    if(flicked){
+      p.dataset.done='1';
+      p.classList.remove('ready','primed','grabbed');
+      p.classList.add('extracted');
+      p.style.setProperty('--pull','0');
+      p.style.setProperty('--lift','0px');
+
+      const plug=p.querySelector('.plug');
+      plug.style.transition='.10s ease-out';
+      plug.style.transform='translate(-50%,-100%) scaleY(1)';
+      plug.style.opacity='1';
+      setTimeout(()=>{
+        p.querySelector('.rim').style.opacity='0';
+        plug.style.transition='.28s cubic-bezier(.2,.8,.2,1)';
+        plug.style.transform='translate(-50%,calc(-100% - 95px)) scaleY(1)';
+      },75);
+      setTimeout(()=>{plug.style.opacity='0'},680);
+
+      p.querySelector('.hole').classList.add('shrink');
+      playPop(size);
+      navigator.vibrate?.(size>1.15?[28,18,36]:24);
+
+      removed++;
+      const gain=Math.round(90*size+20);
+      score+=gain;
+      state.coins+=Math.max(3,Math.round(5*size));
+      save();
+      $('#score').textContent=score;
+      $('#prog').style.width=(removed/total*100)+'%';
+      $('#burst').textContent=size>1.18?'ぴゅーーん！':size<.86?'ぴゅん！':'ぴゅーん！';
+      $('#burst').classList.remove('show');
+      void $('#burst').offsetWidth;
+      $('#burst').classList.add('show');
+      $('#hint').textContent=removed===total?'✨ 全部抜けた！':'次の角栓も、2本指で押し出してからシュッ！';
+      if(removed===total)finishStage();
+    }else{
+      p.classList.remove('grabbed');
+      p.style.setProperty('--pull','0');
+      p.style.setProperty('--lift','0px');
+      setPreReveal(.28);
+      toast('上にシュッ！で抜けるよ');
+    }
+
+    active=null;
+    pullId=null;
+  });
+}
+$('#playBtn').onclick=()=>{ensureAudio();stage=1;newStage();show('#game')};
+$('#nextBtn').onclick=()=>{stage++;newStage()};
+$('#backBtn').onclick=()=>show('#home');
+$('#soundBtn').onclick=()=>{state.sound=!state.sound;save();toast(state.sound?'効果音 ON 🔊':'効果音 OFF 🔇')};
+save();
+</script>
+</body>
+</html>
