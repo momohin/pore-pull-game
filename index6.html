@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="theme-color" content="#f5d9cf" />
+<title>角栓ぬき - PORE PULL v4</title>
+<style>
+:root{
+  --ink:#2b211d; --pink:#eb7390; --pink2:#f4a5b8;
+  --skin1:#efb9a5; --skin2:#f8cfbd; --skin3:#e8aa96;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:var(--ink);background:#f3d9cf;overflow:hidden}
+button{font:inherit}
+.app{height:100dvh;max-width:520px;margin:auto;position:relative;overflow:hidden;background:linear-gradient(#f7e4dc,#f0d1c6)}
+.screen{position:absolute;inset:0;padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));display:none}
+.screen.active{display:flex}
+#home{flex-direction:column;justify-content:space-between}
+.toprow,.gamebar{display:flex;justify-content:space-between;align-items:center}
+.iconbtn{width:46px;height:46px;border:0;border-radius:16px;background:rgba(255,255,255,.62);box-shadow:0 8px 24px rgba(72,42,32,.12);font-size:22px}
+.hero{text-align:center}
+.nose{width:270px;height:218px;margin:auto;border-radius:46% 46% 54% 54%;position:relative;background:
+radial-gradient(circle at 22% 25%,#80645a 0 1.7px,transparent 2.2px),
+radial-gradient(circle at 38% 44%,#795d53 0 1.5px,transparent 2px),
+radial-gradient(circle at 63% 28%,#775c52 0 1.7px,transparent 2.2px),
+radial-gradient(circle at 72% 53%,#82675b 0 1.6px,transparent 2.1px),
+radial-gradient(circle at 48% 65%,#785b51 0 1.5px,transparent 2px),
+linear-gradient(135deg,var(--skin1),var(--skin2) 58%,var(--skin3));box-shadow:inset 0 0 50px rgba(255,255,255,.42),0 18px 40px rgba(90,48,35,.12)}
+.nose:before,.nose:after{content:"";position:absolute;bottom:20px;width:48px;height:25px;background:#71493f;border-radius:50%;box-shadow:inset 0 5px 8px rgba(0,0,0,.2)}
+.nose:before{left:60px}.nose:after{right:60px}
+h1{font-size:43px;margin:10px 0 0;letter-spacing:.08em}
+.sub{font-weight:800;letter-spacing:.3em;margin-top:2px}
+.tag{margin-top:9px;font-size:16px}
+.play{width:100%;border:0;border-radius:28px;padding:18px;background:linear-gradient(135deg,var(--pink2),var(--pink));color:#fff;font-size:23px;font-weight:900;box-shadow:0 12px 28px rgba(230,100,130,.28)}
+.homegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.small{border:0;border-radius:20px;padding:14px 4px;background:rgba(255,255,255,.72);font-weight:800;box-shadow:0 8px 20px rgba(70,40,30,.08)}
+#game{flex-direction:column;background:linear-gradient(#efc0ad,#f8d5c8)}
+.stage{font-weight:900;font-size:19px}
+.pill{background:rgba(88,57,47,.62);color:#fff;padding:9px 13px;border-radius:15px;font-weight:900}
+.progress{height:8px;border-radius:99px;background:rgba(255,255,255,.45);overflow:hidden;margin-top:9px}
+.progress>div{height:100%;width:0;background:#fff;border-radius:inherit;transition:.25s}
+.skin{position:relative;flex:1;margin:14px 0;border-radius:34px;overflow:hidden;box-shadow:inset 0 0 75px rgba(127,71,53,.12),0 12px 30px rgba(75,44,34,.12);background:
+radial-gradient(circle at 10% 18%,rgba(255,255,255,.14),transparent 1.4%),
+radial-gradient(circle at 82% 25%,rgba(255,255,255,.15),transparent 1.2%),
+radial-gradient(circle at 63% 78%,rgba(255,255,255,.12),transparent 1.2%),
+repeating-radial-gradient(circle at 30% 30%,rgba(115,70,55,.05) 0 1px, transparent 1px 9px),
+linear-gradient(135deg,var(--skin1),var(--skin2) 57%,var(--skin3));}
+.pore{
+  --pull:0; --lift:0px;
+  position:absolute;transform:translate(-50%,-50%);width:32px;height:32px;border-radius:50%;touch-action:none;display:grid;place-items:center;z-index:3;
+}
+.tension{
+  position:absolute;left:50%;top:50%;width:92px;height:66px;border-radius:50%;
+  transform:translate(-50%,-50%) translateY(calc(var(--lift) * .48)) scaleX(calc(1 - var(--pull)*.18)) scaleY(calc(1 + var(--pull)*.55));
+  background:radial-gradient(ellipse at 50% 42%,rgba(255,225,214,.36) 0 28%,rgba(205,119,96,.12) 52%,transparent 74%);
+  box-shadow:inset 0 -8px 18px rgba(129,67,52,.10),0 -6px 14px rgba(255,237,230,.12);
+  opacity:calc(.08 + var(--pull)*.95); pointer-events:none;z-index:0;transition:opacity .08s linear;
+}
+.rim{
+  position:absolute;inset:2px;border-radius:50%;
+  background:
+    radial-gradient(circle at 50% 46%,#fffdf7 0 30%,#f6e7c9 31% 43%,#d9bc91 44% 48%,rgba(231,165,146,.88) 49% 61%,rgba(239,184,165,.14) 72%,transparent 75%);
+  box-shadow:0 1px 2px rgba(95,48,37,.10), inset 0 0 4px rgba(255,255,255,.8);
+  transform:translateY(var(--lift)) scaleX(calc(1 - var(--pull)*.12)) scaleY(calc(1 + var(--pull)*.25));
+  z-index:1;
+}
+.pore.grabbed .rim{box-shadow:0 -2px 5px rgba(255,235,226,.26),0 4px 8px rgba(110,55,44,.14)}
+.pore.ready{animation:pulse 1.35s infinite}
+@keyframes pulse{50%{filter:drop-shadow(0 0 8px rgba(255,255,255,.55))}}
+.plug{
+  position:absolute;left:50%;top:50%;border-radius:50% 50% 43% 43%;
+  transform:translate(-50%,12px) scaleY(.18);transform-origin:50% 100%;opacity:0;pointer-events:none;
+  background:linear-gradient(#fff7d6 0 15%,#e4c98b 45%,#b58a5e 72%,#76513e 100%);
+  filter:drop-shadow(0 2px 1px rgba(0,0,0,.18));z-index:4;
+}
+.pore.black .plug{background:linear-gradient(#3b302d 0 12%,#d9c18c 18%,#b8875b 70%,#704a38)}
+.pore.white .plug{background:linear-gradient(#fffdf1,#f1e7c2 60%,#d2b883)}
+.pore.grabbed .plug{opacity:1}
+
+.hole{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.15);border-radius:47% 53% 51% 49%;opacity:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse at 48% 43%,rgba(20,12,10,.88) 0 15%,rgba(65,38,31,.96) 24%,rgba(111,61,49,.88) 42%,rgba(170,90,73,.42) 60%,rgba(230,150,129,.08) 77%,transparent 80%);
+  box-shadow:inset 0 4px 7px rgba(0,0,0,.50),inset 0 -2px 4px rgba(255,205,188,.12),0 0 0 2px rgba(177,84,69,.12);
+}
+.pore.extracted .rim{opacity:0;transform:translateY(0) scale(.92)}
+.pore.extracted .tension{opacity:.16;transform:translate(-50%,-50%) scale(1)}
+.pore.extracted .hole{opacity:1;transform:translate(-50%,-50%) scale(1);transition:.16s cubic-bezier(.2,.9,.25,1.2)}
+.hole.shrink{animation:shrinkHole 6s ease forwards}
+@keyframes shrinkHole{0%,45%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(.68);opacity:.78}}
+.hint{text-align:center;background:rgba(103,68,56,.84);color:white;padding:12px 10px;border-radius:19px;font-weight:800}
+.burst{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);font-size:43px;font-weight:1000;color:white;text-shadow:0 3px 12px rgba(80,40,30,.35);opacity:0;pointer-events:none;z-index:8}
+.burst.show{animation:pop .7s ease}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}35%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}100%{opacity:0;transform:translate(-50%,-70%) scale(.95)}}
+.nextWrap{display:none;position:absolute;inset:0;background:rgba(73,45,36,.28);backdrop-filter:blur(4px);z-index:20;align-items:center;justify-content:center}
+.nextCard{width:min(86%,360px);background:rgba(255,250,247,.96);border-radius:28px;padding:24px;text-align:center;box-shadow:0 18px 45px rgba(64,36,28,.22)}
+.nextCard h3{font-size:28px;margin:0 0 8px}
+.nextCard p{margin:0 0 18px}
+.nextBtn{width:100%;border:0;border-radius:22px;padding:15px;background:linear-gradient(135deg,var(--pink2),var(--pink));color:white;font-weight:900;font-size:19px}
+.toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%);background:#2f231f;color:white;padding:11px 15px;border-radius:99px;opacity:0;transition:.2s;z-index:30;white-space:nowrap;font-weight:800}
+.toast.show{opacity:1}
+.badge{position:absolute;right:12px;top:12px;background:rgba(255,255,255,.65);padding:7px 10px;border-radius:99px;font-weight:900;font-size:12px;z-index:7}
+</style>
+</head>
+<body>
+<div class="app">
+<section id="home" class="screen active">
+  <div class="toprow">
+    <button class="iconbtn" id="soundBtn">🔊</button>
+    <div style="font-weight:900">🪙 <span id="coinHome">0</span></div>
+  </div>
+  <div class="hero">
+    <div class="nose"></div>
+    <h1>角栓ぬき</h1><div class="sub">PORE PULL</div>
+    <div class="tag">にゅる〜、スポン！</div>
+  </div>
+  <div>
+    <button class="play" id="playBtn">プレイする</button>
+    <div class="homegrid">
+      <button class="small">📖<br>図鑑</button>
+      <button class="small">⭐<br>チャレンジ</button>
+      <button class="small">🛒<br>ショップ</button>
+    </div>
+  </div>
+</section>
+
+<section id="game" class="screen">
+  <div class="gamebar">
+    <button class="iconbtn" id="backBtn">←</button>
+    <div class="stage">ステージ <span id="stageNo">1</span></div>
+    <div class="pill">スコア <span id="score">0</span></div>
+  </div>
+  <div class="progress"><div id="prog"></div></div>
+  <div class="skin" id="skin">
+    <div class="badge">🪙 <span id="coinGame">0</span></div>
+    <div id="pores"></div>
+    <div class="burst" id="burst">スポン！</div>
+  </div>
+  <div class="hint" id="hint">角栓を押さえて、そのまま上へゆっくり引っぱろう</div>
+
+  <div class="nextWrap" id="nextWrap">
+    <div class="nextCard">
+      <h3>ステージクリア！✨</h3>
+      <p>全部抜けた！次は少し難しくなるよ。</p>
+      <button class="nextBtn" id="nextBtn">次のステージへ</button>
+    </div>
+  </div>
+</section>
+<div class="toast" id="toast"></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const state={
+  coins:+(localStorage.getItem('poreCoinsV4')||0),
+  sound:localStorage.getItem('poreSoundV4')!=='off'
+};
+let stage=1,score=0,removed=0,total=0,active=null,startY=0,audioCtx=null;
+
+function ensureAudio(){
+  if(!state.sound)return;
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+}
+document.addEventListener('pointerdown',ensureAudio,{once:true});
+
+function playPop(size=1){
+  if(!state.sound)return; ensureAudio(); if(!audioCtx)return;
+  const now=audioCtx.currentTime;
+
+  // high "pyuun!" swoop
+  const osc=audioCtx.createOscillator(),g=audioCtx.createGain();
+  osc.type='sine';
+  const start=size<.9?950:(size>1.15?720:840);
+  const peak=size<.9?1450:(size>1.15?1080:1260);
+  const end=size<.9?620:(size>1.15?460:540);
+  osc.frequency.setValueAtTime(start,now);
+  osc.frequency.exponentialRampToValueAtTime(peak,now+.055);
+  osc.frequency.exponentialRampToValueAtTime(end,now+.20);
+  g.gain.setValueAtTime(.0001,now);
+  g.gain.exponentialRampToValueAtTime(.10,now+.012);
+  g.gain.exponentialRampToValueAtTime(.0001,now+.22);
+  osc.connect(g).connect(audioCtx.destination);
+  osc.start(now);osc.stop(now+.23);
+
+  const air=audioCtx.createOscillator(),ag=audioCtx.createGain();
+  air.type='triangle';
+  air.frequency.setValueAtTime(start*1.35,now);
+  air.frequency.exponentialRampToValueAtTime(end*1.3,now+.11);
+  ag.gain.setValueAtTime(.035,now);
+  ag.gain.exponentialRampToValueAtTime(.0001,now+.12);
+  air.connect(ag).connect(audioCtx.destination);
+  air.start(now);air.stop(now+.13);
+}
+function playStretch(amount=.4){
+  if(!state.sound)return;ensureAudio();if(!audioCtx)return;
+  const now=audioCtx.currentTime,osc=audioCtx.createOscillator(),g=audioCtx.createGain();
+  osc.type='sine';osc.frequency.setValueAtTime(120+amount*30,now);osc.frequency.exponentialRampToValueAtTime(86,now+.05);
+  g.gain.setValueAtTime(.015,now);g.gain.exponentialRampToValueAtTime(.0001,now+.055);
+  osc.connect(g).connect(audioCtx.destination);osc.start(now);osc.stop(now+.06);
+}
+function save(){
+  localStorage.setItem('poreCoinsV4',state.coins);
+  localStorage.setItem('poreSoundV4',state.sound?'on':'off');
+  $('#coinHome').textContent=state.coins;$('#coinGame').textContent=state.coins;
+  $('#soundBtn').textContent=state.sound?'🔊':'🔇';
+}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active')}
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),900)}
+
+function stageConfig(n){
+  const count=Math.min(6+n*2,14);
+  return {count, minLen:22+n*2, maxLen:95+n*10};
+}
+function rand(a,b){return a+Math.random()*(b-a)}
+function newStage(){
+  const cfg=stageConfig(stage);
+  removed=0; total=cfg.count; score=0;
+  $('#stageNo').textContent=stage; $('#score').textContent=0; $('#prog').style.width='0%';
+  $('#nextWrap').style.display='none'; $('#pores').innerHTML='';
+  for(let i=0;i<cfg.count;i++){
+    const p=document.createElement('div');p.className='pore ready';
+    p.style.left=rand(12,88)+'%';p.style.top=rand(14,84)+'%';
+
+    const size=rand(.72,1.38);
+    const len=rand(cfg.minLen,cfg.maxLen);
+    const width=rand(10,23)*size;
+    p.dataset.size=size.toFixed(2);
+    p.dataset.need=Math.round(rand(58,90)+len*.18);
+
+    if(Math.random()<.22)p.classList.add('black');
+    else if(Math.random()<.20)p.classList.add('white');
+
+    const holeW=Math.max(20,Math.round(width*1.65));
+    const holeH=Math.max(16,Math.round(width*1.25));
+    p.innerHTML=`<div class="tension"></div><div class="rim"></div><div class="hole" style="width:${holeW}px;height:${holeH}px"></div><div class="plug" style="width:${width}px;height:${len}px"></div>`;
+    bindPore(p);$('#pores').appendChild(p);
+  }
+  $('#hint').textContent='白く詰まった角栓を押さえて、上へ引っぱろう';
+}
+function finishStage(){
+  state.coins+=20+stage*5; save();
+  $('#hint').textContent='✨ 全部抜けた！';
+  setTimeout(()=>$('#nextWrap').style.display='flex',350);
+}
+function bindPore(p){
+  let lastTick=0;
+  p.addEventListener('pointerdown',e=>{
+    if(p.dataset.done)return;ensureAudio();active=p;startY=e.clientY;p.setPointerCapture(e.pointerId);p.classList.add('grabbed')
+  });
+  p.addEventListener('pointermove',e=>{
+    if(active!==p)return;
+    const dy=Math.min(0,e.clientY-startY),dist=Math.abs(dy),plug=p.querySelector('.plug');
+    plug.style.transform=`translate(-50%,${12+dy*.76}px) scaleY(${Math.max(.18,Math.min(1.25,.18+dist/85))})`;
+
+    const pull=Math.min(1,dist/110),lift=Math.min(18,dist*.15);
+    p.style.setProperty('--pull',pull.toFixed(3));p.style.setProperty('--lift',(-lift)+'px');
+    if(dist-lastTick>24){playStretch(pull);lastTick=dist}
+  });
+  p.addEventListener('pointerup',e=>{
+    if(active!==p)return;
+    const dy=e.clientY-startY,need=-Number(p.dataset.need),size=Number(p.dataset.size);
+    if(dy<need){
+      p.dataset.done='1';p.classList.remove('ready');p.classList.add('extracted');
+      p.style.setProperty('--pull','0');p.style.setProperty('--lift','0px');
+      const plug=p.querySelector('.plug');plug.style.transition='.24s';plug.style.transform='translate(-50%,-150px) scaleY(1.32)';plug.style.opacity='1';
+      setTimeout(()=>{plug.style.opacity='0'},520);
+      p.querySelector('.hole').classList.add('shrink');
+      playPop(size);navigator.vibrate?.(size>1.15?[28,18,36]:24);
+      removed++; const gain=Math.round(90*size+20); score+=gain; state.coins+=Math.max(3,Math.round(5*size));save();
+      $('#score').textContent=score;$('#prog').style.width=(removed/total*100)+'%';
+      $('#burst').textContent=size>1.18?'ぴゅーーん！':size<.86?'ぴゅん！':'ぴゅーん！';
+      $('#burst').classList.remove('show');void $('#burst').offsetWidth;$('#burst').classList.add('show');
+      if(removed===total)finishStage();
+    }else{
+      p.classList.remove('grabbed');p.style.setProperty('--pull','0');p.style.setProperty('--lift','0px');
+      const plug=p.querySelector('.plug');plug.style.transition='.16s';plug.style.transform='translate(-50%,12px) scaleY(.18)';
+
+      toast('もう少し上まで！');
+    }
+    active=null;
+  });
+}
+$('#playBtn').onclick=()=>{ensureAudio();stage=1;newStage();show('#game')};
+$('#nextBtn').onclick=()=>{stage++;newStage()};
+$('#backBtn').onclick=()=>show('#home');
+$('#soundBtn').onclick=()=>{state.sound=!state.sound;save();toast(state.sound?'効果音 ON 🔊':'効果音 OFF 🔇')};
+save();
+</script>
+</body>
+</html>
